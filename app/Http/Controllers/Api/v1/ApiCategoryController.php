@@ -9,6 +9,9 @@ use Delivery\Http\Controllers\Controller;
 
 class ApiCategoryController extends Controller
 {
+    public function index(){
+
+    }
     public function listByCompany($id)
     {
         $categories = Category::where('company_id',$id)->get();
