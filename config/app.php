@@ -163,10 +163,11 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
-
         /*
          * Package Service Providers...
          */
+
+        Barryvdh\Cors\ServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -175,6 +176,7 @@ return [
         Delivery\Providers\AuthServiceProvider::class,
         // Delivery\Providers\BroadcastServiceProvider::class,
         Delivery\Providers\EventServiceProvider::class,
+        Delivery\Providers\RepositoryServiceProvider::class,
         Delivery\Providers\RouteServiceProvider::class,
 
     ],

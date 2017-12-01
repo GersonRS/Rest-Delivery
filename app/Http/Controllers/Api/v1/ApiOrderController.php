@@ -3,23 +3,55 @@
 namespace Delivery\Http\Controllers\Api\v1;
 
 use Delivery\Http\Requests\CheckoutRequest;
-use Delivery\Http\Resources\OrderResource;
-use Delivery\Models\Order;
+use Delivery\Http\Requests\OrderCreateRequest;
+use Delivery\Repositories\OrderRepository;
+use Delivery\Repositories\UserRepository;
 use Delivery\Services\OrderService;
 use Delivery\Http\Controllers\Controller;
+use Prettus\Validator\Contracts\ValidatorInterface;
+use Prettus\Validator\Exceptions\ValidatorException;
+use Delivery\Validators\OrderValidator;
 use Illuminate\Support\Facades\Auth;
 
 class ApiOrderController extends Controller
 {
 
+    /**
+     * @var OrderRepository
+     */
+    protected $repository;
+    /**
+     * @var UserRepository
+     */
+    private $userRepository;
+    /**
+     * @var OrderService
+     */
     private $service;
+    /**
+     * with
+     */
+    private $with = ['user','items','cupom'];
+
+    /**
+     * @var OrderValidator
+     */
+    protected $validator;
 
     public function __construct(
+        OrderRepository $repository,
+        OrderValidator $validator,
+        UserRepository $userRepository,
         OrderService $service
     )
     {
+        $this->repository = $repository;
+        $this->validator  = $validator;
+        $this->userRepository = $userRepository;
         $this->service = $service;
     }
+
+
     /**
      * Display a listing of the resource.
      *
@@ -27,37 +59,67 @@ class ApiOrderController extends Controller
      */
     public function index()
     {
-        $user_id = Auth::user()->id;
-        $orders = Order::where('user_id',$user_id)->get();
-        $result = OrderResource::collection($orders);
-        return $result;
+        $this->repository->pushCriteria(app('Prettus\Repository\Criteria\RequestCriteria'));
+
+        $clientId = Auth::user()->id;
+
+        $orders = $this->repository
+            ->skipPresenter(false)
+            ->with($this->with)
+            ->scopeQuery(function($query) use($clientId){
+                return $query->where('user_id',$clientId);
+            })->all();
+
+        return $orders;
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  OrderCreateRequest $request
+     *
      * @return \Illuminate\Http\Response
      */
-    public function store(CheckoutRequest $request)
+    public function store(OrderCreateRequest $request)
     {
-        $data = $request->all();
-        $data['user_id'] = Auth::user()->id;
-        $o = $this->service->create($data);
-        $result = new OrderResource($o);
-        return $result;
+
+        try {
+
+            $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
+
+            $data = $request->all();
+
+            $data['user_id'] = Auth::user()->id;
+
+            $o = $this->service->create($data);
+
+            return $this->repository
+                ->skipPresenter(false)
+                ->with($this->with)
+                ->find($o->id);
+
+        } catch (ValidatorException $e) {
+            return response()->json([
+                'error'   => true,
+                'message' => $e->getMessageBag()
+            ]);
+        }
     }
+
 
     /**
      * Display the specified resource.
      *
-     * @param  \Delivery\Models\Order  $order
+     * @param  int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
-        $order = Order::find($id);
-        $result = new OrderResource($order);
-        return $result;
+        $o = $this->repository
+            ->skipPresenter(false)
+            ->with($this->with)
+            ->find($id);
+        return $o;
     }
 }

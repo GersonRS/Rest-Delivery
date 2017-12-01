@@ -6,10 +6,12 @@ use Laravel\Passport\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Artesaos\Defender\Traits\HasDefender;
+use Prettus\Repository\Contracts\Transformable;
+use Prettus\Repository\Traits\TransformableTrait;
 
-class User extends Authenticatable
+class User extends Authenticatable implements Transformable
 {
-    use HasApiTokens, Notifiable, HasDefender;
+    use HasApiTokens, Notifiable, HasDefender, TransformableTrait;
 
     /**
      * The attributes that are mass assignable.
@@ -38,4 +40,6 @@ class User extends Authenticatable
     {
         return $this->hasMany(Company::class);
     }
+
 }
+

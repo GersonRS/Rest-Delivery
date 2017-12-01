@@ -16,12 +16,12 @@ return [
     /*
      * Default Role model used by Defender.
      */
-    'role_model' => Artesaos\Defender\Role::class,
+    'role_model' => \Delivery\Models\Role::class,
 
     /*
      * Default Permission model used by Defender.
      */
-    'permission_model' => Artesaos\Defender\Permission::class,
+    'permission_model' => \Delivery\Models\Permission::class,
 
     /*
      * Roles table name

@@ -17,8 +17,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+
 Route::middleware('auth:api')->namespace('Api')->group(function () {
     Route::namespace('v1')->group(function () {
+        Route::get('authenticated', 'ApiUserController@index')
+            ->name('authenticated');
         Route::get('categories/by-company/{id}', 'ApiCategoryController@listByCompany')
             ->name('categoryByCompany');
         Route::resource('companies',
