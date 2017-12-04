@@ -13,7 +13,7 @@ use Delivery\Models\Order;
 class OrderTransformer extends TransformerAbstract
 {
 
-    protected $availableIncludes = [ 'user', 'cupom', 'items', 'company'];
+    protected $availableIncludes = [ 'client', 'cupom', 'items', 'company'];
     /**
      * Transform the \Order entity
      * @param \Order $model
@@ -73,9 +73,9 @@ class OrderTransformer extends TransformerAbstract
     {
         return $this->item($model->company, new CompanyTransformer());
     }
-    public function includeUser(Order $model)
+    public function includeClient(Order $model)
     {
-        return $this->item($model->user, new UserTransformer());
+        return $this->item($model->client, new ClientTransformer());
     }
     public function includeCupom(Order $model)
     {

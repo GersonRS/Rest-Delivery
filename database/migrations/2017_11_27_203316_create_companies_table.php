@@ -24,8 +24,9 @@ class CreateCompaniesTable extends Migration
             $table->string('website');
             $table->string('mail');
             $table->string('address');
-            $table->boolean('active');
+            $table->string('phone');
             $table->string('image');
+            $table->boolean('active');
             $table->timestamps();
         });
     }

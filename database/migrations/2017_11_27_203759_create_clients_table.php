@@ -21,8 +21,6 @@ class CreateClientsTable extends Migration
             $table->string('city');
             $table->string('state');
             $table->string('zipcode');
-            $table->string('phone');
-            $table->string('image');
             $table->timestamps();
         });
     }

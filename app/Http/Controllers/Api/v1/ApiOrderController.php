@@ -89,8 +89,6 @@ class ApiOrderController extends Controller
 
             $data = $request->all();
 
-            $data['user_id'] = Auth::user()->id;
-
             $o = $this->service->create($data);
 
             return $this->repository

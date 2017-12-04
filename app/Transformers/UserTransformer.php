@@ -12,8 +12,7 @@ use Delivery\Models\User;
 class UserTransformer extends TransformerAbstract
 {
 
-    protected $availableIncludes = ['client'];
-    protected $defaultIncludes = ["role"];
+    protected $defaultIncludes = ["role",'client'];
     /**
      * Transform the \User entity
      * @param \User $model

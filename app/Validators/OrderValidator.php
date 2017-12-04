@@ -14,9 +14,7 @@ class OrderValidator extends LaravelValidator
 
     protected $rules = [
         ValidatorInterface::RULE_CREATE => [
-            'company'=> 'exists:companies,id',
-            'cupom'=> 'nullable|exists:cupoms,code,used,0',
-            'items'=> 'required'
+
         ]
     ];
 }

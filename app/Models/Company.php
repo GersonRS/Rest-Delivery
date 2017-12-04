@@ -19,7 +19,9 @@ class Company extends Model implements Transformable
         'website',
         'mail',
         'address',
-        'image'
+        'phone',
+        'image',
+        'active'
     ];
 
     public function user()

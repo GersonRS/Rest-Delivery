@@ -12,16 +12,33 @@ namespace Delivery\Services;
 use Delivery\Models\Cupom;
 use Delivery\Models\Order;
 use Delivery\Models\Product;
+use Delivery\Repositories\CupomRepository;
+use Delivery\Repositories\OrderRepository;
+use Delivery\Repositories\ProductRepository;
 use Illuminate\Support\Facades\DB;
 
 class OrderService
 {
+    private $orderRepository;
+    private $cupomRepository;
+    private $productRepository;
+
+    public function __construct(
+        OrderRepository $orderRepository,
+        CupomRepository $cupomRepository,
+        ProductRepository $productRepository
+    ) {
+        $this->orderRepository = $orderRepository;
+        $this->cupomRepository = $cupomRepository;
+        $this->productRepository = $productRepository;
+    }
+
     public function create(array $data)
     {
         DB::beginTransaction();
         try{
             if(isset($data['cupom'])){
-                $cupom = Cupom::where('code',$data['cupom'])->first();
+                $cupom = $this->cupomRepository->findByField('code',$data['cupom'])->first();
                 $data['cupom_id'] = $cupom->id;
                 $cupom->used = 1;
                 $cupom->save();
@@ -30,18 +47,18 @@ class OrderService
             $items = json_decode($data['items'],true);
             unset($data['items']);
             $data['total'] = 0;
-            $order = factory(Order::class)->create($data);
+            $order = $this->orderRepository->create($data);
             $total = 0;
             foreach($items as $item) {
-                $item['price'] = Product::find($item['id'])->price * $item['amount'];
+                $item['price'] = $this->productRepository->find($item['id'])->price;
                 $item['product_id'] = $item['id'];
                 unset($item['id']);
                 $order->items()->create($item);
-                $total += $item['price'];
+                $total += $item['price'] * $item['amount'];
             }
             $order->total = $total;
             if (isset($cupom)) {
-                if ($cupom->type=='percent')
+                if ($cupom->percent)
                     $order->total = $total - ($total * $cupom->value);
                 else
                     $order->total = $total - $cupom->value;
@@ -51,7 +68,6 @@ class OrderService
             return $order;
         }catch (\Exception $e) {
             DB::rollback();
-            throw $e;
         }
     }
 

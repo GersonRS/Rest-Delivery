@@ -12,7 +12,8 @@ $factory->define(Delivery\Models\Company::class, function (Faker $faker) {
         'website' => $faker->domainName,
         'mail' => $faker->companyEmail,
         'address' => $faker->address,
-        'active' => $faker->boolean(100),
-        'image' =>$faker->imageUrl(640,480,'business',true,'Faker')
+        'phone' => $faker->phoneNumber,
+        'image' =>$faker->imageUrl(640,480,'business',true,'Faker'),
+        'active' => $faker->boolean(100)
     ];
 });
