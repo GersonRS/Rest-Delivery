@@ -4,6 +4,7 @@ namespace Delivery\Http\Controllers\Api\v1;
 
 use Delivery\Http\Requests\CheckoutRequest;
 use Delivery\Http\Requests\OrderCreateRequest;
+use Delivery\Models\User;
 use Delivery\Repositories\OrderRepository;
 use Delivery\Repositories\UserRepository;
 use Delivery\Services\OrderService;
@@ -31,7 +32,7 @@ class ApiOrderController extends Controller
     /**
      * with
      */
-    private $with = ['user','items','cupom'];
+    private $with = ['client','items','cupom','company'];
 
     /**
      * @var OrderValidator
@@ -61,13 +62,17 @@ class ApiOrderController extends Controller
     {
         $this->repository->pushCriteria(app('Prettus\Repository\Criteria\RequestCriteria'));
 
-        $clientId = Auth::user()->id;
+        $user = Auth::user();
+
+        foreach($user->client as $client) {
+            $clients[] = $client->id;
+        }
 
         $orders = $this->repository
             ->skipPresenter(false)
             ->with($this->with)
-            ->scopeQuery(function($query) use($clientId){
-                return $query->where('user_id',$clientId);
+            ->scopeQuery(function($query) use($clients){
+                return $query->whereIn('client_id',$clients);
             })->all();
 
         return $orders;

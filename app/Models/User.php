@@ -33,7 +33,7 @@ class User extends Authenticatable implements Transformable
 
     public function client()
     {
-        return $this->hasOne(Client::class);
+        return $this->hasMany(Client::class);
     }
 
     public function companies()
