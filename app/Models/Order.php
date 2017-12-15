@@ -16,6 +16,7 @@ class Order extends Model implements Transformable
         'cupom_id',
         'total',
         'comment',
+        'pay',
         'status',
         'hash'
     ];

@@ -23,6 +23,7 @@ class CreateOrdersTable extends Migration
             $table->foreign('cupom_id')->references('id')->on('cupoms')->onDelete('cascade');
             $table->decimal('total');
             $table->text('comment')->nullable();
+            $table->decimal('pay');
             $table->smallInteger('status')->default(0);
             $table->string('hash')->nullable();
             $table->timestamps();

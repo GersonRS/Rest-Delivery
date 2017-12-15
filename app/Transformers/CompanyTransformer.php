@@ -30,6 +30,7 @@ class CompanyTransformer extends TransformerAbstract
             'website' => $model->website,
             'mail' => $model->mail,
             'address' => $model->address,
+            'phone' => $model->phone,
             'image' => $model->image
         ];
     }

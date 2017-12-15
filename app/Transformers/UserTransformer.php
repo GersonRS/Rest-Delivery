@@ -30,7 +30,7 @@ class UserTransformer extends TransformerAbstract
 
     public function includeClient(User $model)
     {
-        return $this->item($model->client, new ClientTransformer());
+        return $this->collection($model->client, new ClientTransformer());
     }
 
     public function includeRole(User $model)

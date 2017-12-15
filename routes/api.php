@@ -22,6 +22,7 @@ Route::middleware('auth:api')->namespace('Api')->group(function () {
     Route::namespace('v1')->group(function () {
         Route::get('authenticated', 'ApiUserController@index')
             ->name('authenticated');
+        Route::get('cupom/{code}', 'ApiCupomsController@show');
         Route::get('categories/by-company/{id}', 'ApiCategoryController@listByCompany')
             ->name('categoryByCompany');
         Route::resource('companies',
@@ -31,6 +32,10 @@ Route::middleware('auth:api')->namespace('Api')->group(function () {
         Route::resource('order',
             'ApiOrderController', [
                 'except' => ['create', 'edit', 'destroy','update']
+            ]);
+        Route::resource('client',
+            'ApiClientsController', [
+                'except' => ['edit', 'destroy','update']
             ]);
     });
 });

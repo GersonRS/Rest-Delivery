@@ -63,6 +63,7 @@ class OrderService
                 else
                     $order->total = $total - $cupom->value;
             }
+            $order->pay = $order->pay - $order->total;
             $order->save();
             DB::commit();
             return $order;
